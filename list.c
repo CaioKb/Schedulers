@@ -7,8 +7,6 @@
 #include <string.h>
 
 #include "list.h"
-#include "task.h"
-
 
 // add a new task to the list of tasks - adiciona no início
 void insert(Node** head, Task* newTask) {
