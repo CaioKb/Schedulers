@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include "list.h"
+#include "task.h"
 
 // add a new task to the list of tasks - adiciona no início
 void insert(Node** head, Task* newTask) {
@@ -40,8 +41,8 @@ void insert_end(Node** head, Task* task) {
 
 // delete the selected task from the list
 void delete(Node** head, Task *task) {
-    Node* temp;
-    Node* prev;
+    Node* temp = malloc(sizeof(Node));
+    Node* prev = malloc(sizeof(Node));
 
     temp = *head;
     // special case - beginning of list
@@ -63,7 +64,7 @@ void delete(Node** head, Task *task) {
 
 // traverse the list
 void traverse(Node *head) {
-    Node* temp;
+    Node* temp = malloc(sizeof(Node));
     temp = head;
 
     while (temp != NULL) {

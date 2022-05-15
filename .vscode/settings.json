@@ -1,1 +1,6 @@
-{}
+{
+    "files.associations": {
+        "schedule_rr.h": "c",
+        "task.h": "c"
+    }
+}

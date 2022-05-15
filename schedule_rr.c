@@ -8,9 +8,8 @@
 Node* head = NULL; //inicio da fila principal (ready list)
 Node* priorityHead = NULL; // fila temporária
 
-int hasPriority = 0;
-
-void add(char* name, int priority, int burst){
+void add(char* name, int priority, int burst)
+{
    Task* task = malloc(sizeof(Task));
 
    task->name = name;
@@ -20,13 +19,13 @@ void add(char* name, int priority, int burst){
    insert(&head, task);
 }
 
-void schedule(){
+void schedule()
+{
    Task* nextTask;
-
+   
    while (head != NULL) {
       nextTask = selectNextTask();
-
-      CreatePriorityList(nextTask);
+      createPriorityList(nextTask);
 
       while(priorityHead != NULL) {
          roundRobinScheduler(&priorityHead, priorityHead->task);
@@ -74,7 +73,7 @@ Task* selectNextTask() {
    return nextTask;
 }
 
-void CreatePriorityList(Task* task)
+void createPriorityList(Task* task)
 {
    insert(&priorityHead, task);
    delete(&head, task);
@@ -83,7 +82,7 @@ void CreatePriorityList(Task* task)
 
    while (aux != NULL) {
       if (aux->task->priority == task->priority) {
-         insert(&priorityHead, aux->task);
+         insert_end(&priorityHead, aux->task);
          delete(&head, aux->task);
       }
 

@@ -14,4 +14,4 @@ void runFullTask(Node** queue, Task* task);
 
 Task* selectNextTask();
 
-void CreatePriorityList();
+void createPriorityList();
