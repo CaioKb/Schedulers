@@ -5,62 +5,60 @@
 
 #include "CPU.h"
 
-Node* head = NULL; //inicio da fila principal (ready list)
-Node* priorityHead = NULL; // fila temporária
+Node* head = NULL;
+Node* priorityQueue = NULL;
 
 void add(char* name, int priority, int burst)
 {
    Task* task = malloc(sizeof(Task));
-
    task->name = name;
    task->priority = priority;
    task->burst = burst;
-
    insert(&head, task);
 }
 
 void schedule()
 {
-   Task* nextTask;
+   Task* highestPriotiyTask = malloc(sizeof(Task));
    
    while (head != NULL) {
-      nextTask = selectNextTask();
-      createPriorityList(nextTask);
+      highestPriotiyTask = selectHighestPriorityTask();
+      createPriorityList(highestPriotiyTask);
 
-      while(priorityHead != NULL) {
-         roundRobinScheduler(&priorityHead, priorityHead->task);
+      while(priorityQueue != NULL) {
+         Task* nextTask = priorityQueue->task;
+         roundRobinScheduler(nextTask);
       }
    }
 }
 
-void roundRobinScheduler(Node** queue, Task* task)
+void roundRobinScheduler(Task* task)
 {
    if (task->burst > QUANTUM) {
       run(task, QUANTUM);
-
       task->burst -= QUANTUM;
 
-      insert_end(queue, task);
-      delete(queue, task);
+      insert_end(&priorityQueue, task);
+      delete(&priorityQueue, task);
 
    }
    else {
-      runFullTask(queue, task);
+      runFullTask(task);
    }
 }
 
-void runFullTask(Node** queue, Task* task)
+void runFullTask(Task* task)
 {
    run(task, task->burst);
-   delete(queue, task);
+   delete(&priorityQueue, task);
    printf("Task %s has ended.\n", task->name);
 }
 
-Task* selectNextTask() {
-   Task* nextTask = head->task; //primeira task da fila
-   Node* aux = head->next; //recebe o segundo nó da fila
+Task* selectHighestPriorityTask() {
+   Task* nextTask = head->task;
+   Node* aux = head->next;
 
-   while (aux != NULL) { //enquanto existir uma próxima task na fila
+   while (aux != NULL) {
       int currentPriority = aux->task->priority;
 
       if(currentPriority < nextTask->priority) {
@@ -75,14 +73,14 @@ Task* selectNextTask() {
 
 void createPriorityList(Task* task)
 {
-   insert(&priorityHead, task);
+   insert(&priorityQueue, task);
    delete(&head, task);
 
    Node* aux = head;
 
    while (aux != NULL) {
       if (aux->task->priority == task->priority) {
-         insert_end(&priorityHead, aux->task);
+         insert_end(&priorityQueue, aux->task);
          delete(&head, aux->task);
       }
 

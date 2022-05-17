@@ -9,7 +9,7 @@ void add(char *name, int priority, int burst);
 
 // invoke the scheduler
 void schedule();
-void runFullTask(Node** queue, Task* task);
+void runShortestTasks(Task* task);
 
-Task* selectNextTask();
+Task* selectSmallestBurstTask();
 void createPriorityList(Task* task);

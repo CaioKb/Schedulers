@@ -9,9 +9,9 @@ void add(char *name, int priority, int burst);
 
 // invoke the scheduler
 void schedule();
-void roundRobinScheduler(Node** queue, Task* task);
-void runFullTask(Node** queue, Task* task);
+void roundRobinScheduler(Task* task);
+void runFullTask(Task* task);
 
-Task* selectNextTask();
+Task* selectHighestPriorityTask();
 
 void createPriorityList();

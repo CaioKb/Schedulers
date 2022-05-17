@@ -5,8 +5,8 @@
 
 #include "CPU.h"
 
-Node* head = NULL; //inicio da fila principal (ready list)
-Node* priorityList = NULL;
+Node* head = NULL;
+Node* runningList = NULL;
 
 void add(char* name, int priority, int burst)
 {
@@ -21,31 +21,32 @@ void add(char* name, int priority, int burst)
 
 void schedule()
 {
-    Task* nextTask = malloc(sizeof(Task));
+    Task* highestPriotiyTask = malloc(sizeof(Task));
 
     while (head != NULL) {
-        nextTask = selectNextTask();
-        createPriorityList(nextTask);
+        highestPriotiyTask = selectSmallestBurstTask();
+        createPriorityList(highestPriotiyTask);
 
-        while (priorityList != NULL) {
-            runFullTask(&priorityList, priorityList->task);
+        while (runningList != NULL) {
+            Task* nextTask = runningList->task;
+            runShortestTasks(nextTask);
         }
     }
 }
 
-void runFullTask(Node** queue, Task* task)
+void runShortestTasks(Task* task)
 {
    run(task, task->burst);
-   delete(queue, task);
+   delete(&runningList, task);
    printf("Task %s has ended.\n", task->name);
 }
 
-Task* selectNextTask() 
+Task* selectSmallestBurstTask() 
 {
-   Task* nextTask = head->task; //primeira task da fila
-   Node* aux = head->next; //recebe o segundo nó da fila
+   Task* nextTask = head->task;
+   Node* aux = head->next;
 
-   while (aux != NULL) { //enquanto existir uma próxima task na fila
+   while (aux != NULL) {
       int currentBurst = aux->task->burst;
 
       if(currentBurst < nextTask->burst) {
@@ -60,17 +61,17 @@ Task* selectNextTask()
 
 void createPriorityList (Task* task)
 {
-   insert(&priorityList, task);
-   delete(&head, task);
+    insert(&runningList, task);
+    delete(&head, task);
 
-   Node* aux = head;
+    Node* aux = head;
 
-   while (aux != NULL) {
-      if (aux->task->burst == task->burst) {
-         insert_end(&priorityList, aux->task);
-         delete(&head, aux->task);
-      }
+    while (aux != NULL) {
+        if (aux->task->burst == task->burst) {
+            insert_end(&runningList, aux->task);
+            delete(&head, aux->task);
+        }
 
-      aux = aux->next;
+        aux = aux->next;
    }
 }
